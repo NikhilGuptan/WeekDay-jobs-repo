@@ -8,43 +8,15 @@ import Spinner from './Components/Spinner';
 const App = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [offset, setOffset] = useState(0);
-  const [hasMore, setHasMore] = useState(true);
   const loader = useRef(null);
-
-  useEffect(() => {
-    const options = {
-      root: null,
-      rootMargin: '20px',
-      threshold: 1.0
-    };
-
-    const observer = new IntersectionObserver(handleObserver, options);
-    if (loader.current) {
-      observer.observe(loader.current);
-    }
-
-    return () => {
-      if (loader.current) {
-        observer.unobserve(loader.current);
-      }
-    };
-  }, []);
-
-  const handleObserver = (entities) => {
-    const target = entities[0];
-    if (target.isIntersecting && hasMore) {
-      setOffset(offset + 10);
-    }
-  };
+  const [page, setPage] = useState(0);
 
   const loadJobs = () => {
     setLoading(true);
-    fetchJobs(10, offset)
+    fetchJobs(10, page)
       .then((data) => {
         setJobs([...jobs, ...data.jdList]);
         setLoading(false);
-        setHasMore(data.jobs.length > 0);
       })
       .catch((error) => {
         console.error(error);
@@ -54,8 +26,27 @@ const App = () => {
 
   useEffect(() => {
     loadJobs();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page]);
+
+  const handelInfiniteScroll = async () => {
+    try {
+      if (
+        window.innerHeight + document.documentElement.scrollTop + 1 >=
+        document.documentElement.scrollHeight
+      ) {
+        setPage((prev) => prev + 1);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handelInfiniteScroll);
+    return () => window.removeEventListener("scroll", handelInfiniteScroll);
   }, []);
+
+  
 
   return (
     <div className="app-container">
