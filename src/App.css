@@ -90,7 +90,8 @@
 }
 
 .about-us {
-  margin-top: 10px;
+  margin-top: 0;
+  margin-bottom: 0;
   font-weight: bold;
 }
 
@@ -114,10 +115,14 @@
   background-color: #55EFC4;
   color: #2C0000;
   border: none;
-  padding: 10px 20px;
-  border-radius: 20px;
+  padding: 16px 12px !important;
+  border-radius: 10px !important;
   cursor: pointer;
   margin-top: 20px;
+  width:350px;
+  font-weight: bold;
+  font-size: 16px;
+
 }
 .job-list {
   display: flex;
